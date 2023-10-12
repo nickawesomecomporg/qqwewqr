@@ -1,0 +1,34 @@
+name: Update README with Random Hash
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Generate Random Hash
+        id: random_hash
+        run: echo "::set-output name=hash::$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 10)"
+
+      - name: Update README
+        run: |
+          echo "Random Hash: ${{ steps.random_hash.outputs.hash }}" >> README.txt
+          git add README.txt
+          git commit -m "Update README with Random Hash"
+          git push
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Create PR to update README with Random Hash"
+          branch: update-readme-${{ github.run_number }}
+          title: "Update README with Random Hash"
+          body: "This PR updates the README file with a random hash."
