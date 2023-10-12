@@ -16,18 +16,23 @@ jobs:
       - name: Set up Git
         run: |
           git config --global user.email "nick.koukounakis@panther.com"
-          git config --global user.name "NickKouk"
-      
+          git config --global user.name "nick.kouk"
+
       - name: Generate Random Hash
         id: random_hash
         run: echo "::set-output name=hash::$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 10)"
+
+      - name: Create a new branch
+        run: git checkout -b update-readme-${{ github.run_number }}
 
       - name: Update README
         run: |
           echo "Random Hash: ${{ steps.random_hash.outputs.hash }}" >> README.txt
           git add README.txt
           git commit -m "Update README with Random Hash"
-          git push
+
+      - name: Push changes to the new branch
+        run: git push origin update-readme-${{ github.run_number }}
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v3
