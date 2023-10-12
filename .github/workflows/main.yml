@@ -13,6 +13,11 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v2
 
+      - name: Set up Git
+        run: |
+          git config --global user.email "nick.koukounakis@panther.com"
+          git config --global user.name "NickKouk"
+      
       - name: Generate Random Hash
         id: random_hash
         run: echo "::set-output name=hash::$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 10)"
